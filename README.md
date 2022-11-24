@@ -7,28 +7,43 @@ create table if not exists account
 			primary key,
 	balance double precision
 );
+
+After each run do 
+UPDATE account SET balance = 10 WHERE iban = 1;
+UPDATE account SET balance = 0 WHERE iban = 2;
 ```
 ### Call via CURL
 
 ```
 Transfer
 curl --request POST \
-  --url http://localhost:8080/transfer \
+  --url http://localhost:8080/transferCountdownLatch \
   --header 'Content-Type: application/json' \
-  --cookie JSESSIONID=4B054C05AB3D559A30E8A6B3C5A21B4E \
   --data '{
 	"from": "1",
 	"to": "2",
-	"amount": 4
+	"amount": 5
 }'
 
 GetMapKey
-curl --request GET \
-  --url 'http://localhost:8080/getMapValue?mapKey=Test6' \
-  --cookie JSESSIONID=4B054C05AB3D559A30E8A6B3C5A21B4E
+curl --request GET --url 'http://localhost:8080/getMapValue?mapKey=Test6' 
+
+TestMapValues
+curl --request GET --url http://localhost:8080/testMapValues
+
+concurrentDataStructures
+curl --request GET --url http://localhost:8080/concurrentDataStructures 
+
+phaser
+curl --request GET --url 'http://localhost:8080/phaser?mapKey=Test6'
 ```
 
+### Local Load Testing Tool
+`artillery quick --count 20 --num 50 http://localhost:8080/getMapValue?mapKey=Test6`  
+The --count parameter above specifies the total number of virtual users, while --num indicates the number of requests that should be made per user.  
+`artillery run artillery.yml`
 
+### Articles and Explanations
 
 https://medium.com/geekculture/transaction-isolation-levels-f438f861e48a
 
