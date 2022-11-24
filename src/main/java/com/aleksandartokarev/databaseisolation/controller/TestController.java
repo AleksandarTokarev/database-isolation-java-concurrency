@@ -5,6 +5,7 @@ import com.aleksandartokarev.databaseisolation.domain.MyThread;
 import com.aleksandartokarev.databaseisolation.domain.TransferDTO;
 import com.aleksandartokarev.databaseisolation.repository.TestRepository;
 import com.aleksandartokarev.databaseisolation.service.TestService;
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -170,5 +171,54 @@ public class TestController {
         myPhaser.arriveAndAwaitAdvance();
 
         System.out.println("Ending phase three");
+    }
+
+
+    private Queue<Integer> mainList = new ConcurrentLinkedQueue<>();
+//    private List<Integer> mainList = new ArrayList<>();
+
+    @RequestMapping(value="/guava", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public void guava() throws InterruptedException, ConcurrentModificationException {
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < 1_000_000; i++) {
+            list.add(i);
+        }
+        List<List<Integer>> subSets = Lists.partition(list, 1000);
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        for (int i = 0; i < 1000; i++) {
+            int finalI = i;
+            executorService.submit(() -> {
+                processList(subSets.get(finalI));
+            });
+        }
+        executorService.shutdown();
+
+
+        List<Integer> sortedList = new ArrayList<>();
+        Set<Integer> sortedSEt = new TreeSet<>();
+        for(Integer item: list) {
+            sortedList.add(item);
+        }
+        Collections.sort(sortedList);
+
+        for(Integer item: list) {
+            sortedSEt.add(item);
+        }
+        System.out.println("OK");
+    }
+
+
+
+    public void processList(List<Integer> totalList) {
+        for (int i = 0; i < totalList.size(); i++) {
+            try {
+//                totalList.remove(1);
+                mainList.add(totalList.get(i));
+            } catch(Exception e) {
+                System.out.println("Exception:" + totalList.get(i));
+            }
+//            System.out.println("Printing: " + totalList.get(i));
+        }
     }
 }

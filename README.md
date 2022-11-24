@@ -89,3 +89,7 @@ Meaning if Write Lock is set on a Row, no other T can read/Write on that row.
 
 Local Postgres Docker  
 docker run --name myPostgresDb -p 5432:5432 -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=admin -e POSTGRES_DB=postgresDB -d postgres
+
+### Guava
+https://www.baeldung.com/java-list-split  
+https://www.geeksforgeeks.org/java-guava-lists-partition-method-with-examples/
