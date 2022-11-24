@@ -8,6 +8,11 @@ create table if not exists account
 	balance double precision
 );
 
+INSERT INTO account(iban, balance) VALUES (1, 10);
+INSERT INTO account(iban, balance) VALUES (2, 0);
+
+SELECT * FROM account;
+
 After each run do 
 UPDATE account SET balance = 10 WHERE iban = 1;
 UPDATE account SET balance = 0 WHERE iban = 2;
