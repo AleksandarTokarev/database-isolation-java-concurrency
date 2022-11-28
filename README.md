@@ -22,30 +22,52 @@ UPDATE account SET balance = 0 WHERE iban = 2;
 ```
 Transfer
 curl --request POST \
-  --url http://localhost:8080/transferCountdownLatch \
+  --url http://localhost:8080/transfer \
   --header 'Content-Type: application/json' \
   --data '{
-	"from": "1",
-	"to": "2",
+	"from": 1,
+	"to":2,
 	"amount": 5
 }'
 
-GetMapKey
+curl --request POST \
+  --url http://localhost:8080/transferCountdownLatch \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"from": 1,
+	"to":2,
+	"amount": 5
+}'
+
+curl --request POST \
+  --url http://localhost:8080/transferCountdownLatch \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"from": 1,
+	"to":2,
+	"amount": 5
+}'
+
+Phaser
+curl --request GET --url http://localhost:8080/phaser
+
+ConcurrentMap
+curl --request GET --url http://localhost:8080/concurrentDataStructuresMap 
+
+Concurrent List
+curl --request GET --url http://localhost:8080/concurrentDataStructuresList 
+
+GetMapValue
 curl --request GET --url 'http://localhost:8080/getMapValue?mapKey=Test6' 
 
-TestMapValues
-curl --request GET --url http://localhost:8080/testMapValues
-
-concurrentDataStructures
-curl --request GET --url http://localhost:8080/concurrentDataStructures 
-
-phaser
-curl --request GET --url 'http://localhost:8080/phaser?mapKey=Test6'
+GetMapValueWithBarrier
+curl --request GET --url 'http://localhost:8080/getMapValueWithBarrier?mapKey=Test6' 
 ```
 
 ### Local Load Testing Tool
-`artillery quick --count 20 --num 50 http://localhost:8080/getMapValue?mapKey=Test6`  
-The --count parameter above specifies the total number of virtual users, while --num indicates the number of requests that should be made per user.  
+`artillery quick --count 20 --num 50 http://localhost:8080/getMapValue`  
+The --count parameter above specifies the total number of virtual users, while --num indicates the number of requests that should be made per user.  Quick supports only GET requests
+We can also use a custom yml file to write our own tests/scenarios
 `artillery run artillery.yml`
 
 ### Articles and Explanations
@@ -90,6 +112,10 @@ Meaning if Write Lock is set on a Row, no other T can read/Write on that row.
 Local Postgres Docker  
 docker run --name myPostgresDb -p 5432:5432 -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=admin -e POSTGRES_DB=postgresDB -d postgres
 
+
 ### Guava
 https://www.baeldung.com/java-list-split  
 https://www.geeksforgeeks.org/java-guava-lists-partition-method-with-examples/
+
+### Takeaways
+https://stackoverflow.com/questions/1291836/concurrenthashmap-vs-synchronized-hashmap  

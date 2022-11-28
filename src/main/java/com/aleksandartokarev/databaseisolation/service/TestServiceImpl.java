@@ -22,16 +22,17 @@ public class TestServiceImpl implements TestService {
     private Map<String, Integer> map = new HashMap<>();
     private Random randomGenerator = new Random();
 
-    @Scheduled(fixedRate = 5)
+    @Scheduled(fixedDelay = 100)
     public void refillMap() {
         for (int i = 0; i < 100; i++) {
             int j = randomGenerator.nextInt(100);
             map.put("Test" + j, j);
         }
+//        System.out.println("END");
     }
 
     @Override
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public void transfer(TransferDTO transferDTO) throws DatabaseCustomException {
         Double fromBalance = testRepository.getBalance(transferDTO.getFrom());
         if (fromBalance >= transferDTO.getAmount()) {
@@ -42,7 +43,11 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public Integer getMapValue(String key) throws DatabaseCustomException {
-//        if (randomGenerator.nextBoolean()) throw new DatabaseCustomException(DatabaseCustomException.Culprit.INTERNAL_ERROR, "Error");
-        return map.get(key);
+        try {
+            return map.get(key);
+        } catch(Exception e) {
+            System.out.println(e.getClass() + ":" + e.getMessage());
+            throw new DatabaseCustomException(DatabaseCustomException.Culprit.INTERNAL_ERROR, "Concurrent Error");
+        }
     }
 }
