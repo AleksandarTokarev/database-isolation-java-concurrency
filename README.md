@@ -66,8 +66,8 @@ curl --request GET --url 'http://localhost:8080/getMapValueWithBarrier?mapKey=Te
 
 ### Local Load Testing Tool
 `artillery quick --count 20 --num 50 http://localhost:8080/getMapValue`  
-The --count parameter above specifies the total number of virtual users, while --num indicates the number of requests that should be made per user.  Quick supports only GET requests
-We can also use a custom yml file to write our own tests/scenarios
+The --count parameter above specifies the total number of virtual users, while --num indicates the number of requests that should be made per user.  Quick supports only GET requests  
+We can also use a custom yml file to write our own tests/scenarios  
 `artillery run artillery.yml`
 
 ### Articles and Explanations
